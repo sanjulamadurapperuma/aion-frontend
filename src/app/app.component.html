@@ -1,0 +1,213 @@
+<div class="container-fluid">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="basics/home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="basics/public">Public</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="basics/admin1">
+            <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
+            Admin-1
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLinkActive="active" routerLink="extras/admin2">
+            <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
+            Admin-2
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" (click)="onOpenModal(null, 'add')" routerLinkActive="active" routerLink="add">
+            <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
+            Add Employee
+          </a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input type="search" (ngModelChange)="searchEmployees(key.value)" #key="ngModel" ngModel
+          name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search employees..." required>
+      </form>
+      <button class="btn btn-sm btn-default" (click)="login()" *ngIf="(isAuthenticated$ | async) === false">Log in</button>
+      <span *ngIf="isAuthenticated$ | async" id="email">{{email}}</span>
+      <button *ngIf="isAuthenticated$ | async" href="#" (click)="logout()" class="btn btn-link">(log out)</button>
+    </nav>
+    <div class="container-fluid mt-2">
+      <h1>Welcome to AION</h1>
+      <p>This is part of the app.component. Below is the router outlet.</p>
+      <hr>
+      <router-outlet></router-outlet>
+      <hr>
+      <p>You can <a routerLink="/url-without-route">go to a url without a route</a> to see the fallback route.</p>
+      <hr>
+      <div>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
+        <div class="container" id="main-container">
+            <div class="row">
+                <div *ngFor="let employee of employees" class="col-md-6 col-xl-3">
+                    <div class="card m-b-30">
+                        <div class="card-body row">
+                            <div class="col-6">
+                                <a href=""><img src="{{employee?.imageUrl}}" alt="" class="img-fluid rounded-circle w-60"></a>
+                            </div>
+                            <div class="col-6 card-title align-self-center mb-0">
+                                <h5>{{employee?.name}}</h5>
+                                <p class="m-0">{{employee?.jobTitle}}</p>
+                            </div>
+                        </div>
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><i class="fa fa-envelope float-right"></i>{{employee?.email}}</li>
+                            <li class="list-group-item"><i class="fa fa-phone float-right"></i>Phone: {{employee?.phoneNumber}}</li>
+                        </ul>
+                        <div class="card-body">
+                            <div class="float-right btn-group btn-group-sm">
+                                <a (click)="onOpenModal(employee, 'edit')" class="btn btn-primary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Edit"><i class="fa fa-pencil"></i> </a>
+                                <a (click)="onOpenModal(employee, 'delete')" class="btn btn-secondary tooltips" data-placement="top" data-toggle="tooltip" data-original-title="Delete"><i class="fa fa-times"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+      </div>
+
+      <!-- Add Employee Modal -->
+      <div class="modal fade" id="addEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="addEmployeeModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addEmployeeModalLabel">Add Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form #addForm="ngForm" (ngSubmit)="onAddEmployee(addForm)">
+                <div class="form-group">
+                  <label for="name">Name</label>
+                  <input type="text" ngModel name="name" class="form-control" id="name" placeholder="Name" required>
+                </div>
+                <div class="form-group">
+                  <label for="email">Email Address</label>
+                  <input type="email" ngModel name="email" class="form-control" id="email" placeholder="Email" required>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Job title</label>
+                  <input type="text" ngModel name="jobTitle" class="form-control" id="jobTile" placeholder="Job title" required>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Phone</label>
+                  <input type="text" ngModel name="phone" class="form-control" id="phone" placeholder="Phone" required>
+                </div>
+                <div class="form-group">
+                  <label for="phone">Image URL</label>
+                  <input type="text" ngModel name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL" required>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" id="add-employee-form" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button [disabled]="addForm.invalid" type="submit" class="btn btn-primary" >Save changes</button>
+                </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Edit Modal -->
+      <div class="modal fade" id="updateEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="employeeEditModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="updateEmployeeModalLabel">Edit Employee {{editEmployee?.name}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <form #editForm="ngForm">
+                    <div class="form-group">
+                      <label for="name">Name</label>
+                      <input type="text" ngModel="{{editEmployee?.name}}" name="name" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Name">
+                    </div>
+                    <input type="hidden" ngModel="{{editEmployee?.id}}" name="id" class="form-control" id="id" placeholder="Email">
+                    <input type="hidden" ngModel="{{editEmployee?.code}}" name="userCode" class="form-control" id="userCode" placeholder="Email">
+                    <div class="form-group">
+                      <label for="email">Email Address</label>
+                      <input type="email" ngModel="{{editEmployee?.email}}" name="email" class="form-control" id="email" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Job title</label>
+                      <input type="text" ngModel="{{editEmployee?.jobTitle}}" name="jobTitle" class="form-control" id="jobTitle" placeholder="Job title">
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Phone</label>
+                      <input type="text" ngModel="{{editEmployee?.phoneNumber}}" name="phone" class="form-control" id="phone" name="phone" placeholder="Phone">
+                    </div>
+                    <div class="form-group">
+                      <label for="phone">Image URL</label>
+                      <input type="text" ngModel="{{editEmployee?.imageUrl}}" name="imageUrl" class="form-control" id="imageUrl" placeholder="Image URL">
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" id="" data-dismiss="modal" class="btn btn-secondary">Close</button>
+                      <button (click)="onUpdateEmployee(editForm.value)" data-dismiss="modal" class="btn btn-primary" >Save changes</button>
+                    </div>
+                </form>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Delete Modal -->
+      <div class="modal fade" id="deleteEmployeeModal" tabindex="-1" role="dialog" aria-labelledby="deleteModelLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModelLabel">Delete Employee</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to delete employee {{deleteEmployee?.name}}?</p>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button (click)="onDeleteEmployee(deleteEmployee?.id)" class="btn btn-danger" data-dismiss="modal">Yes</button>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Notification for no employees -->
+      <div *ngIf="employees?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+        <div class="alert alert-info" role="alert">
+          <h4 class="alert-heading">NO EMPLOYEES!</h4>
+          <p>No Employees were found.</p>
+        </div>
+      </div>
+
+      <p>
+        <button class="btn btn-success mr-1" (click)='login()'>login</button>
+        <button class="btn btn-primary mr-1" (click)='logout()'>logout</button>
+        <button class="btn btn-link mr-1" (click)='logoutExternally()'>logout externally...</button>
+      </p>
+      <p>
+        <button class="btn btn-warning mr-1" (click)='refresh()'>force silent refresh</button>
+        <button class="btn btn-secondary mr-1" (click)='reload()'>reload page</button>
+        <button class="btn btn-danger mr-1" (click)='clearStorage()'>clear storage</button>
+      </p>
+      <hr>
+      <table class="table table-bordered table-sm table-props">
+        <tr><th>IsAuthenticated</th><td><code id="isAuthenticated">{{isAuthenticated$ | async}}</code></td></tr>
+        <tr><th>HasValidToken</th><td><code id="hasValidToken">{{hasValidToken}}</code></td></tr>
+        <tr><th>IsDoneLoading</th><td><code id="isDoneLoading">{{isDoneLoading$ | async}}</code></td></tr>
+        <tr><th>CanActivateProtectedRoutes</th><td><code id="canActivateProtectedRoutes">{{canActivateProtectedRoutes$ | async}}</code></td></tr>
+        <tr><th>IdentityClaims</th><td class="pre"><code id="identityClaims">{{identityClaims | json}}</code></td></tr>
+        <tr><th>RefreshToken</th><td><code class="break-all">{{refreshToken}}</code></td></tr>
+        <tr><th>AccessToken</th><td><code class="break-all">{{accessToken}}</code></td></tr>
+        <tr><th>IdToken</th><td><code class="break-all">{{idToken}}</code></td></tr>
+      </table>
+    </div>
+  </div>

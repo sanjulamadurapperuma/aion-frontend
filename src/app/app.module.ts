@@ -1,22 +1,25 @@
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { RouterModule } from '@angular/router';
 
-import { AppMenuComponent } from './app-menu.component';
 import { AppComponent } from './app.component';
 import { CoreModule } from './core/core.module';
+import { EmployeeService } from './employee.service';
 import { FallbackComponent } from './fallback.component';
 import { ShouldLoginComponent } from './should-login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AppMenuComponent,
     FallbackComponent,
     ShouldLoginComponent,
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
+    FormsModule,
     CoreModule.forRoot(),
     RouterModule.forRoot([
     { path: '', redirectTo: 'basics/home', pathMatch: 'full' },
@@ -27,6 +30,7 @@ import { ShouldLoginComponent } from './should-login.component';
     { path: '**', component: FallbackComponent },
 ], {})
   ],
+  providers: [EmployeeService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
