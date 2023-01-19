@@ -1,22 +1,77 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-
-import { ApiService } from '../shared/api.service';
+import { AuthService } from '../core/auth.service';
+import { EmployeeService } from '../employee.service';
 
 @Component({
   selector: 'app-admin',
-  template: `<p class="alert alert-danger">
-    This is the <strong>🔧 ADMIN 2</strong> component.
-    It will redirect you to login if needed.
-    - {{ apiResponse | async }}
-  </p>`,
+  templateUrl: `./admin2.component.html`,
 })
 export class Admin2Component implements OnInit {
   apiResponse!: Observable<string>;
+  public isAuthenticated$: Observable<boolean>;
+  public isDoneLoading$: Observable<boolean>;
+  public canActivateProtectedRoutes$: Observable<boolean>;
 
-  constructor(private apiService: ApiService) { }
+  constructor(
+    private authService: AuthService,
+  ) {
+    this.isAuthenticated$ = this.authService.isAuthenticated$;
+    this.isDoneLoading$ = this.authService.isDoneLoading$;
+    this.canActivateProtectedRoutes$ = this.authService.canActivateProtectedRoutes$;
+  }
 
   ngOnInit() {
-    this.apiResponse = this.apiService.getProtectedApiResponse();
+    // this.apiResponse = this.apiService.getProtectedApiResponse();
+  }
+
+  public login() { 
+    this.authService.login(); 
+  }
+  
+  public logout() { 
+    this.authService.logout(); 
+  }
+  
+  public refresh() { 
+    this.authService.refresh(); 
+  }
+  
+  public reload() { 
+    window.location.reload(); 
+  }
+  
+  public clearStorage() { 
+    localStorage.clear(); 
+  }
+
+  public logoutExternally() {
+    window.open(this.authService.logoutUrl);
+  }
+
+  get hasValidToken() { 
+    return this.authService.hasValidToken(); 
+  }
+  
+  get accessToken() { 
+    return this.authService.accessToken; 
+  }
+  
+  get refreshToken() { 
+    return this.authService.refreshToken; 
+  }
+  
+  get identityClaims() { 
+    return this.authService.identityClaims; 
+  }
+  
+  get idToken() { 
+    return this.authService.idToken; 
+  }
+  
+  get email(): string {
+    return this.authService.identityClaims
+    ? (this.authService.identityClaims as any)['email']
+    : '-';
   }
 }

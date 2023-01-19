@@ -8,13 +8,13 @@ import { Admin2Component } from './admin2.component';
 
 @NgModule({
   declarations: [
-    Admin2Component,
+    // Admin2Component,
   ],
   imports: [
     CommonModule,
     SharedModule,
     RouterModule.forChild([
-      { path: 'admin2', component: Admin2Component, canActivate: [AuthGuardWithForcedLogin] },
+      // { path: 'admin2', component: Admin2Component, canActivate: [AuthGuardWithForcedLogin] },
     ]),
   ],
 })

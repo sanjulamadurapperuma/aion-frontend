@@ -123,21 +123,50 @@ export class AppComponent implements OnInit {
     button.click();
   }
 
-  public login() { this.authService.login(); }
-  public logout() { this.authService.logout(); }
-  public refresh() { this.authService.refresh(); }
-  public reload() { window.location.reload(); }
-  public clearStorage() { localStorage.clear(); }
+  public login() { 
+    this.authService.login(); 
+  }
+  
+  public logout() { 
+    this.authService.logout(); 
+  }
+  
+  public refresh() { 
+    this.authService.refresh(); 
+  }
+  
+  public reload() { 
+    window.location.reload(); 
+  }
+  
+  public clearStorage() { 
+    localStorage.clear(); 
+  }
 
   public logoutExternally() {
     window.open(this.authService.logoutUrl);
   }
 
-  get hasValidToken() { return this.authService.hasValidToken(); }
-  get accessToken() { return this.authService.accessToken; }
-  get refreshToken() { return this.authService.refreshToken; }
-  get identityClaims() { return this.authService.identityClaims; }
-  get idToken() { return this.authService.idToken; }
+  get hasValidToken() { 
+    return this.authService.hasValidToken(); 
+  }
+  
+  get accessToken() { 
+    return this.authService.accessToken; 
+  }
+  
+  get refreshToken() { 
+    return this.authService.refreshToken; 
+  }
+  
+  get identityClaims() { 
+    return this.authService.identityClaims; 
+  }
+  
+  get idToken() { 
+    return this.authService.idToken; 
+  }
+  
   get email(): string {
     return this.authService.identityClaims
     ? (this.authService.identityClaims as any)['email']
