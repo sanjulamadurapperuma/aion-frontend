@@ -10,7 +10,7 @@ import { AuthGuardWithForcedLogin } from './core/auth-guard-with-forced-login.se
 import { CoreModule } from './core/core.module';
 import { EmployeeService } from './employee.service';
 import { FallbackComponent } from './fallback.component';
-import { Admin2Component } from './feature-extras/admin2.component';
+import { AdminConsoleComponent } from './feature-extras/admin-console.component';
 import { SharedModule } from './shared/shared.module';
 import { ShouldLoginComponent } from './should-login.component';
 
@@ -19,7 +19,7 @@ import { ShouldLoginComponent } from './should-login.component';
     AppComponent,
     FallbackComponent,
     ShouldLoginComponent,
-    Admin2Component,
+    AdminConsoleComponent,
   ],
   imports: [
     BrowserModule,
@@ -32,9 +32,8 @@ import { ShouldLoginComponent } from './should-login.component';
     { path: '', redirectTo: 'basics/home', pathMatch: 'full' },
     // Note: this way of module loading requires this in your tsconfig.json: "module": "esnext"
     { path: 'basics', loadChildren: () => import('./feature-basics/basics.module').then(m => m.BasicsModule) },
-    // { path: 'extras', loadChildren: () => import('./feature-extras/extras.module').then(m => m.ExtrasModule) },
     { path: 'should-login', component: ShouldLoginComponent },
-    { path: 'extras/admin2', component: Admin2Component, canActivate: [AuthGuardWithForcedLogin] },
+    { path: 'extras/admin-console', component: AdminConsoleComponent, canActivate: [AuthGuardWithForcedLogin] },
     { path: '**', component: FallbackComponent },
 ], {})
   ],

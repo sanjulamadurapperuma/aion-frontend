@@ -64,7 +64,7 @@ describe('Happy Path Flow', () => {
   });
 
   it('should be able to navigate to Admin-1 page', async () => {
-    await appPage.clickMenuLinkTo('basics/admin1');
+    await appPage.clickMenuLinkTo('basics/admin-console');
     expect(await appPage.getTitleText()).toEqual('Welcome');
     expect(await appPage.getMainContentText()).toContain('ADMIN');
     expect(await appPage.getMainContentText()).toContain('API Success');

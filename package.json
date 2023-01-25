@@ -1,7 +1,7 @@
 {
-  "name": "sample-angular-oauth2-oidc-with-auth-guards",
+  "name": "aion-frontend",
   "version": "1.0.0",
-  "homepage": "https://github.com/jeroenheijmans/sample-angular-oauth2-oidc-with-auth-guards",
+  "homepage": "https://github.com/sanjulamadurapperuma/aion-frontend",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --ssl=false --open",

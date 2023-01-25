@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
 import { AuthService } from '../core/auth.service';
-import { EmployeeService } from '../employee.service';
 
 @Component({
   selector: 'app-admin',
-  templateUrl: `./admin2.component.html`,
+  templateUrl: `./admin.component.html`,
 })
-export class Admin2Component implements OnInit {
+export class AdminConsoleComponent implements OnInit {
   apiResponse!: Observable<string>;
   public isAuthenticated$: Observable<boolean>;
   public isDoneLoading$: Observable<boolean>;
@@ -21,9 +20,7 @@ export class Admin2Component implements OnInit {
     this.canActivateProtectedRoutes$ = this.authService.canActivateProtectedRoutes$;
   }
 
-  ngOnInit() {
-    // this.apiResponse = this.apiService.getProtectedApiResponse();
-  }
+  ngOnInit() {}
 
   public login() { 
     this.authService.login(); 

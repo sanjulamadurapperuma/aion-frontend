@@ -5,28 +5,19 @@
           <a class="nav-link" routerLinkActive="active" routerLink="basics/home">Home</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="basics/public">Public</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="basics/admin1">
+          <a class="nav-link" routerLinkActive="active" routerLink="extras/admin-console">
             <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
-            Admin-1
+            Admin
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" routerLinkActive="active" routerLink="extras/admin2">
-            <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
-            Admin-2
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" (click)="onOpenModal(null, 'add')" routerLinkActive="active" routerLink="add">
+          <a class="nav-link" (click)="onOpenModal(null, 'add')">
             <span *ngIf="(isAuthenticated$ | async) === false">🔒</span>
             Add Employee
           </a>
         </li>
       </ul>
-      <form class="form-inline my-2 my-lg-0">
+      <form class="form-inline my-2 my-lg-0" *ngIf="isAuthenticated$ | async">
         <input type="search" (ngModelChange)="searchEmployees(key.value)" #key="ngModel" ngModel
           name="key" id="searchName" class="form-control mr-sm-2" placeholder="Search employees..." required>
       </form>
@@ -36,11 +27,9 @@
     </nav>
     <div class="container-fluid mt-2">
       <h1>Welcome to AION</h1>
-      <p>This is part of the app.component. Below is the router outlet.</p>
+      <p>Your trusted employee management system.</p>
       <hr>
       <router-outlet></router-outlet>
-      <hr>
-      <p>You can <a routerLink="/url-without-route">go to a url without a route</a> to see the fallback route.</p>
       <hr>
       <div>
         <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
@@ -181,7 +170,7 @@
       </div>
 
       <!-- Notification for no employees -->
-      <div *ngIf="employees?.length == 0" class="col-lg-12 col-md-12 col-xl-12">
+      <div *ngIf="employees?.length == 0 && (isAuthenticated$ | async)" class="col-lg-12 col-md-12 col-xl-12">
         <div class="alert alert-info" role="alert">
           <h4 class="alert-heading">NO EMPLOYEES!</h4>
           <p>No Employees were found.</p>

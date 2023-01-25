@@ -36,14 +36,18 @@ export class AppComponent implements OnInit {
   }
 
   public getEmployees(): void {
-    this.employeeService.getEmployees().subscribe(
-      (response: Employee[]) => {
-        this.employees = response;
-      },
-      (error: HttpErrorResponse) => {
-        alert(error.message);
+    this.isAuthenticated$.subscribe(data => {
+      if (data === true) {
+        this.employeeService.getEmployees().subscribe(
+          (response: Employee[]) => {
+            this.employees = response;
+          },
+          (error: HttpErrorResponse) => {
+            alert(error.message);
+          }
+        )
       }
-    )
+    })
   }
 
   public searchEmployees(key: string): void {
@@ -108,19 +112,26 @@ export class AppComponent implements OnInit {
     button.type = 'button';
     button.style.display = 'none';
     button.setAttribute('data-toggle', 'modal');
-    if (mode === 'add') {
-      button.setAttribute('data-target', '#addEmployeeModal');
-    }
-    if (mode === 'edit') {
-      this.editEmployee = employee;
-      button.setAttribute('data-target', '#updateEmployeeModal');
-    }
-    if (mode === 'delete') {
-      this.deleteEmployee = employee;
-      button.setAttribute('data-target', '#deleteEmployeeModal');
-    }
-    container?.appendChild(button);
-    button.click();
+    this.isAuthenticated$.subscribe(data => {
+      if (data === true) {
+        if (mode === 'add') {
+          button.setAttribute('data-target', '#addEmployeeModal');
+        }
+        if (mode === 'edit') {
+          this.editEmployee = employee;
+          button.setAttribute('data-target', '#updateEmployeeModal');
+        }
+        if (mode === 'delete') {
+          this.deleteEmployee = employee;
+          button.setAttribute('data-target', '#deleteEmployeeModal');
+        }
+        container?.appendChild(button);
+        button.click();
+      } else {
+        console.log('You are not permitted to perform this action without logging in.');
+        this.login();
+      }
+    })
   }
 
   public login() { 
