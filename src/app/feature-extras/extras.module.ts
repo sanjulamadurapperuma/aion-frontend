@@ -4,17 +4,17 @@ import { RouterModule } from '@angular/router';
 
 import { AuthGuardWithForcedLogin } from '../core/auth-guard-with-forced-login.service';
 import { SharedModule } from '../shared/shared.module';
-import { Admin2Component } from './admin2.component';
+import { AdminConsoleComponent } from './admin-console.component';
 
 @NgModule({
   declarations: [
-    Admin2Component,
+    // Admin2Component,
   ],
   imports: [
     CommonModule,
     SharedModule,
     RouterModule.forChild([
-      { path: 'admin2', component: Admin2Component, canActivate: [AuthGuardWithForcedLogin] },
+      // { path: 'admin2', component: Admin2Component, canActivate: [AuthGuardWithForcedLogin] },
     ]),
   ],
 })

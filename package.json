@@ -1,7 +1,7 @@
 {
-  "name": "sample-angular-oauth2-oidc-with-auth-guards",
+  "name": "aion-frontend",
   "version": "1.0.0",
-  "homepage": "https://github.com/jeroenheijmans/sample-angular-oauth2-oidc-with-auth-guards",
+  "homepage": "https://github.com/sanjulamadurapperuma/aion-frontend",
   "scripts": {
     "ng": "ng",
     "start": "ng serve --ssl=false --open",
@@ -23,6 +23,7 @@
     "@angular/platform-browser-dynamic": "^15.0.0",
     "@angular/router": "^15.0.0",
     "angular-oauth2-oidc": "^15.0.1",
+    "bootstrap": "^5.2.3",
     "rxjs": "^7.5.7",
     "tslib": "^2.4.1",
     "zone.js": "^0.12.0"

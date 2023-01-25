@@ -1,73 +1,186 @@
 /* eslint-disable brace-style */
 /* eslint-disable max-len */
 
-import { Component } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Observable } from 'rxjs';
 
 import { AuthService } from './core/auth.service';
+import { Employee } from './employee';
+import { EmployeeService } from './employee.service';
 
 @Component({
   selector: 'app-root',
-  template: `<div class="container-fluid">
-    <app-menu></app-menu>
-    <div class="container-fluid mt-2">
-      <h1>Welcome to AION</h1>
-      <p>This is part of the app.component. Below is the router outlet.</p>
-      <hr>
-      <router-outlet></router-outlet>
-      <hr>
-      <p>You can <a routerLink="/url-without-route">go to a url without a route</a> to see the fallback route.</p>
-      <hr>
-      <p>
-        <button class="btn btn-success mr-1" (click)='login()'>login</button>
-        <button class="btn btn-primary mr-1" (click)='logout()'>logout</button>
-        <button class="btn btn-link mr-1" (click)='logoutExternally()'>logout externally...</button>
-      </p>
-      <p>
-        <button class="btn btn-warning mr-1" (click)='refresh()'>force silent refresh</button>
-        <button class="btn btn-secondary mr-1" (click)='reload()'>reload page</button>
-        <button class="btn btn-danger mr-1" (click)='clearStorage()'>clear storage</button>
-      </p>
-      <hr>
-      <table class="table table-bordered table-sm table-props">
-        <tr><th>IsAuthenticated</th><td><code id="isAuthenticated">{{isAuthenticated$ | async}}</code></td></tr>
-        <tr><th>HasValidToken</th><td><code id="hasValidToken">{{hasValidToken}}</code></td></tr>
-        <tr><th>IsDoneLoading</th><td><code id="isDoneLoading">{{isDoneLoading$ | async}}</code></td></tr>
-        <tr><th>CanActivateProtectedRoutes</th><td><code id="canActivateProtectedRoutes">{{canActivateProtectedRoutes$ | async}}</code></td></tr>
-        <tr><th>IdentityClaims</th><td class="pre"><code id="identityClaims">{{identityClaims | json}}</code></td></tr>
-        <tr><th>RefreshToken</th><td><code class="break-all">{{refreshToken}}</code></td></tr>
-        <tr><th>AccessToken</th><td><code class="break-all">{{accessToken}}</code></td></tr>
-        <tr><th>IdToken</th><td><code class="break-all">{{idToken}}</code></td></tr>
-      </table>
-    </div>
-  </div>`,
+  templateUrl: './app.component.html',
 })
-export class AppComponent {
-  isAuthenticated$: Observable<boolean>;
-  isDoneLoading$: Observable<boolean>;
-  canActivateProtectedRoutes$: Observable<boolean>;
+export class AppComponent implements OnInit {
+  public isAuthenticated$: Observable<boolean>;
+  public isDoneLoading$: Observable<boolean>;
+  public canActivateProtectedRoutes$: Observable<boolean>;
+  public employees: Employee[] = [];
+  public editEmployee: Employee | null | undefined;
+  public deleteEmployee: Employee | null | undefined;
 
   constructor(
     private authService: AuthService,
+    private employeeService: EmployeeService,
   ) {
     this.isAuthenticated$ = this.authService.isAuthenticated$;
     this.isDoneLoading$ = this.authService.isDoneLoading$;
     this.canActivateProtectedRoutes$ = this.authService.canActivateProtectedRoutes$;
   }
 
-  login() { this.authService.login(); }
-  logout() { this.authService.logout(); }
-  refresh() { this.authService.refresh(); }
-  reload() { window.location.reload(); }
-  clearStorage() { localStorage.clear(); }
+  ngOnInit() {
+      this.getEmployees();
+  }
 
-  logoutExternally() {
+  public getEmployees(): void {
+    this.isAuthenticated$.subscribe(data => {
+      if (data === true) {
+        this.employeeService.getEmployees().subscribe(
+          (response: Employee[]) => {
+            this.employees = response;
+          },
+          (error: HttpErrorResponse) => {
+            alert(error.message);
+          }
+        )
+      }
+    })
+  }
+
+  public searchEmployees(key: string): void {
+    console.log(key);
+    const results: Employee[] = [];
+    for (const employee of this.employees) {
+      if (employee.name.toLowerCase().indexOf(key.toLowerCase()) !== -1
+      || employee.email.toLowerCase().indexOf(key.toLowerCase()) !== -1
+      || employee.phoneNumber.toLowerCase().indexOf(key.toLowerCase()) !== -1
+      || employee.jobTitle.toLowerCase().indexOf(key.toLowerCase()) !== -1) {
+        results.push(employee);
+      }
+    }
+    this.employees = results;
+    if (results.length === 0 || !key) {
+      this.getEmployees();
+    }
+  }
+
+  public onAddEmployee(addForm: NgForm): void {
+    document.getElementById('add-employee-form')?.click();
+    this.employeeService.addEmployee(addForm.value).subscribe(
+      (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+        addForm.reset();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+        addForm.reset();
+      }
+    );
+  }
+
+  public onUpdateEmployee(employee: Employee): void {
+    this.employeeService.updateEmployee(employee).subscribe(
+      (response: Employee) => {
+        console.log(response);
+        this.getEmployees();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    );
+  }
+
+  public onDeleteEmployee(employeeId: number | undefined): void {
+    this.employeeService.deleteEmployee(employeeId).subscribe(
+      (response: void) => {
+        console.log(response);
+        this.getEmployees();
+      },
+      (error: HttpErrorResponse) => {
+        alert(error.message);
+      }
+    );
+  }
+
+  public onOpenModal(employee: Employee | null, mode: string): void {
+    const container = document.getElementById('main-container');
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.style.display = 'none';
+    button.setAttribute('data-toggle', 'modal');
+    this.isAuthenticated$.subscribe(data => {
+      if (data === true) {
+        if (mode === 'add') {
+          button.setAttribute('data-target', '#addEmployeeModal');
+        }
+        if (mode === 'edit') {
+          this.editEmployee = employee;
+          button.setAttribute('data-target', '#updateEmployeeModal');
+        }
+        if (mode === 'delete') {
+          this.deleteEmployee = employee;
+          button.setAttribute('data-target', '#deleteEmployeeModal');
+        }
+        container?.appendChild(button);
+        button.click();
+      } else {
+        console.log('You are not permitted to perform this action without logging in.');
+        this.login();
+      }
+    })
+  }
+
+  public login() { 
+    this.authService.login(); 
+  }
+  
+  public logout() { 
+    this.authService.logout(); 
+  }
+  
+  public refresh() { 
+    this.authService.refresh(); 
+  }
+  
+  public reload() { 
+    window.location.reload(); 
+  }
+  
+  public clearStorage() { 
+    localStorage.clear(); 
+  }
+
+  public logoutExternally() {
     window.open(this.authService.logoutUrl);
   }
 
-  get hasValidToken() { return this.authService.hasValidToken(); }
-  get accessToken() { return this.authService.accessToken; }
-  get refreshToken() { return this.authService.refreshToken; }
-  get identityClaims() { return this.authService.identityClaims; }
-  get idToken() { return this.authService.idToken; }
+  get hasValidToken() { 
+    return this.authService.hasValidToken(); 
+  }
+  
+  get accessToken() { 
+    return this.authService.accessToken; 
+  }
+  
+  get refreshToken() { 
+    return this.authService.refreshToken; 
+  }
+  
+  get identityClaims() { 
+    return this.authService.identityClaims; 
+  }
+  
+  get idToken() { 
+    return this.authService.idToken; 
+  }
+  
+  get email(): string {
+    return this.authService.identityClaims
+    ? (this.authService.identityClaims as any)['email']
+    : '-';
+  }
 }

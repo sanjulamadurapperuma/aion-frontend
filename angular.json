@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "sample-auth-guards": {
+    "aion-frontend": {
       "root": "",
       "sourceRoot": "src",
       "projectType": "application",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/sample-auth-guards",
+            "outputPath": "dist/aion-frontend",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -85,14 +85,14 @@
             "ssl": true,
             "sslKey": "ssl/localhost.key",
             "sslCert": "ssl/localhost.crt",
-            "browserTarget": "sample-auth-guards:build"
+            "browserTarget": "aion-frontend:build"
           },
           "configurations": {
             "development": {
-              "browserTarget": "sample-auth-guards:build:development"
+              "browserTarget": "aion-frontend:build:development"
             },
             "production": {
-              "browserTarget": "sample-auth-guards:build:production"
+              "browserTarget": "aion-frontend:build:production"
             }
           },
           "defaultConfiguration": "development"
@@ -100,7 +100,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "sample-auth-guards:build"
+            "browserTarget": "aion-frontend:build"
           }
         },
         "lint": {
@@ -116,14 +116,14 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "sample-auth-guards:serve"
+            "devServerTarget": "aion-frontend:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "sample-auth-guards:serve:production"
+              "devServerTarget": "aion-frontend:serve:production"
             },
             "ci": {
-              "devServerTarget": "sample-auth-guards:serve:production",
+              "devServerTarget": "aion-frontend:serve:production",
               "protractorConfig": "e2e/protractor-ci.conf.js"
             }
           }
