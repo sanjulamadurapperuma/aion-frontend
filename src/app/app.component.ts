@@ -180,7 +180,7 @@ export class AppComponent implements OnInit {
   
   get email(): string {
     return this.authService.identityClaims
-    ? (this.authService.identityClaims as any)['email']
+    ? (this.authService.identityClaims as any)['username']
     : '-';
   }
 }
